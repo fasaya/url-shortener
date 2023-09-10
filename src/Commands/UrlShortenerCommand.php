@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Fasaya\UrlShortener\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class UrlShortenerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'url-shortener';
 
     public $description = 'My command';
 
