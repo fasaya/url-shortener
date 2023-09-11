@@ -22,6 +22,11 @@ return [
     'expire-days' => null,
 
     /**
+     * Allow non-authenticated users to shorten link
+     */
+    'url-prefix' => '/l',
+
+    /**
      * Where should the URL shortener route be?
      */
     'route' => [
