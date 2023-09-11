@@ -13,17 +13,22 @@ return new class extends Migration
     {
         Schema::create('short_links', function (Blueprint $table) {
             $table->id();
+            $table->string('slug');
             $table->string('short_url');
             $table->longText('long_url');
+            $table->string('description')->nullable();
             $table->string('clicks')->default(0);
-            $table->string('secret_key');
             $table->boolean('is_disabled')->default(0);
+            $table->timestamp('expired_at')->nullable();
             $table->timestamps();
             $table->string('created_by')->nullable();
             $table->string('creator_ip')->nullable();
             $table->softDeletes();
             $table->string('deleted_by')->nullable();
             $table->string('deleter_ip')->nullable();
+
+            $table->index('slug');
+            $table->index('short_url');
         });
     }
 

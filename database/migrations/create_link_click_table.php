@@ -17,13 +17,13 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->string('referer')->nullable();
             $table->string('referer_host')->nullable();
-            $table->integer('link_id')->unsigned();
+            $table->integer('short_link_id')->unsigned();
             $table->timestamps();
 
             $table->index('ip');
             $table->index('referer_host');
-            $table->index('link_id');
-            $table->foreign('link_id')->references('id')->on('links')->onDelete('cascade');
+            $table->index('short_link_id');
+            $table->foreign('short_link_id')->references('id')->on('links')->onDelete('cascade');
         });
     }
 
