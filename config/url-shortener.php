@@ -4,12 +4,6 @@
 return [
 
     /**
-     * Default database connection name
-     * Set null to use the default
-     */
-    'connection' => null,
-
-    /**
      * Here you may specify the fully qualified class name of the user model class.
      */
     'user-model' => App\Models\User::class,
