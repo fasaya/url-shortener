@@ -25,96 +25,94 @@ class Link extends Model
         'deleter_ip'
     ];
 
-    private $generate_tries_limit = 5; // how many times generating url before throwing an exception
-
     public function urlClicks()
     {
         return $this->hasMany(LinkClick::class);
     }
 
-    public static function add($long_url, User $user = null): self
-    {
-        self::validUrl($long_url);
+    // public static function add(String $long_url, User $user = null): self
+    // {
+    //     self::validUrl($long_url);
 
-        $generate = self::generateShortUrl($long_url);
+    //     $generate = self::generateShortUrl($long_url);
 
-        return static::create([
-            'slug' => $generate['slug'],
-            'long_url' => $long_url,
-            'short_url' => $generate['url'],
-            'description' => null,
-            'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
-            'created_by' => $user ? $user->id : null,
-            'creator_ip' => request()->ip(),
-        ]);
-    }
+    //     return static::create([
+    //         'slug' => $generate['slug'],
+    //         'long_url' => $long_url,
+    //         'short_url' => $generate['url'],
+    //         'description' => null,
+    //         'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
+    //         'created_by' => $user ? $user->id : null,
+    //         'creator_ip' => request()->ip(),
+    //     ]);
+    // }
 
 
-    public static function addCustom($long_url, $customSlug, User $user = null): self
-    {
-        self::validUrl($long_url);
+    // public static function addCustom(String $long_url, String $customSlug, User $user = null): self
+    // {
+    //     self::validUrl($long_url);
 
-        $short_url = self::generateCustomUrl($customSlug);
+    //     $short_url = self::generateCustomUrl($customSlug);
 
-        return static::create([
-            'slug' => $customSlug,
-            'long_url' => $long_url,
-            'short_url' => $short_url,
-            'description' => null,
-            'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
-            'created_by' => $user ? $user->id : null,
-            'creator_ip' => request()->ip(),
-        ]);
-    }
+    //     return static::create([
+    //         'slug' => $customSlug,
+    //         'long_url' => $long_url,
+    //         'short_url' => $short_url,
+    //         'description' => null,
+    //         'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
+    //         'created_by' => $user ? $user->id : null,
+    //         'creator_ip' => request()->ip(),
+    //     ]);
+    // }
 
-    public static function exists($short_url): bool
-    {
-        return static::where('short_url', $short_url)
-            ->where('is_disabled', 0)
-            ->where('expired_at', '>', now())
-            ->exists();
-    }
+    // public static function exists($short_url): bool
+    // {
+    //     return static::where('short_url', $short_url)
+    //         ->where('is_disabled', 0)
+    //         ->where('expired_at', '>', now())
+    //         ->exists();
+    // }
 
-    public static function validUrl($url): bool
-    {
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            throw new \Exception('Not a valid URL.');
-        }
+    // public static function validUrl($url): bool
+    // {
+    //     if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+    //         throw new \Exception('Not a valid URL.');
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
-    public static function generateShortUrl($long_url): array
-    {
-        $slug = Str::random(10);
-        $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
+    // public static function generateShortUrl($long_url): array
+    // {
+    //     $slug = Str::random(10);
+    //     $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
 
-        if (self::exists($short_url)) {
+    //     if (self::exists($short_url)) {
 
-            // check if tries limit is reached
-            if (self::$generate_tries_limit <= 0) {
-                throw new \Exception('Tries limit reached.');
-            }
+    //         // check if tries limit is reached
+    //         if (self::$generate_tries_limit <= 0) {
+    //             throw new \Exception('Tries limit reached.');
+    //         }
 
-            self::$generate_tries_limit--;
+    //         self::$generate_tries_limit--;
 
-            return static::generateShortUrl($long_url);
-        }
+    //         return static::generateShortUrl($long_url);
+    //     }
 
-        return [
-            'slug' => $slug,
-            'url' => $short_url
-        ];
-    }
+    //     return [
+    //         'slug' => $slug,
+    //         'url' => $short_url
+    //     ];
+    // }
 
-    public static function generateCustomUrl($slug): string
-    {
-        $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
+    // public static function generateCustomUrl($slug): string
+    // {
+    //     $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
 
-        if (self::exists($short_url)) {
-            throw new \Exception('URL already exists.');
-        }
+    //     if (self::exists($short_url)) {
+    //         throw new \Exception('URL already exists.');
+    //     }
 
-        return $short_url;
-    }
+    //     return $short_url;
+    // }
 }

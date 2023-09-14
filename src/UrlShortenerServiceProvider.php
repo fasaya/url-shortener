@@ -8,6 +8,7 @@ use Fasaya\UrlShortener\Commands\UrlShortenerCommand;
 
 class UrlShortenerServiceProvider extends PackageServiceProvider
 {
+
     public function configurePackage(Package $package): void
     {
         /*
@@ -17,9 +18,13 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('url-shortener')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_url-shortener_table')
-            ->hasCommand(UrlShortenerCommand::class);
+            ->hasConfigFile('url-shortener')
+            ->hasMigrations([
+                'create_link_table',
+                'create_link_click_table'
+            ])
+            // ->hasRoutes([])
+            // ->hasCommand(UrlShortenerCommand::class)
+        ;
     }
 }
