@@ -2,9 +2,9 @@
 
 namespace Fasaya\UrlShortener;
 
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Fasaya\UrlShortener\Commands\UrlShortenerCommand;
 
 class UrlShortenerServiceProvider extends PackageServiceProvider
 {
@@ -22,9 +22,22 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
             ->hasMigrations([
                 'create_link_table',
                 'create_link_click_table'
-            ])
-            // ->hasRoutes([])
-            // ->hasCommand(UrlShortenerCommand::class)
-        ;
+            ]);
+    }
+
+    public function packageBooted(): void
+    {
+        $this->installRoutes();
+    }
+
+    protected function installRoutes(): self
+    {
+        Route::get(config('url-shortener.url-prefix') . '/{slug}', [UrlShortenerController::class, 'index'])->name('url-shortener.index');
+
+        if (config('url-shortener.admin-route.enabled')) {
+            // Route::resource(config('url-shortener.admin-route.url-prefix'), AdminController::class);
+        }
+
+        return $this;
     }
 }
