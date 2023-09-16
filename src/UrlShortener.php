@@ -71,7 +71,7 @@ class UrlShortener
     public static function generateShortUrl($long_url): array
     {
         $slug = Str::random(rand(config('url-shortener.min-length', 6), config('url-shortener.max-length', 10)));
-        $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
+        $short_url = config('app.url') . config('url-shortener.uri', '/l') . '/' . $slug;
 
         if (self::exists($short_url)) {
 
@@ -96,7 +96,7 @@ class UrlShortener
     public static function generateCustomUrl($slug): string
     {
         $slug = Str::slug($slug);
-        $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
+        $short_url = config('app.url') . config('url-shortener.uri', '/l') . '/' . $slug;
 
         if (self::exists($short_url)) {
             throw new HttpException(409, 'URL already exists.');
@@ -109,7 +109,7 @@ class UrlShortener
 
     private static function getExpireDate(): null | string
     {
-        return config('url-shortener.expire-days')
+        return !is_null(config('url-shortener.expire-days'))
             ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now())))
             : NULL;
     }

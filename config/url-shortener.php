@@ -10,21 +10,26 @@ return [
 
     /**
      * Optionally set url access duration (days), set to null to keep forever.
-     * example
+     * Example
      * 'expire-days' => 30
      */
     'expire-days' => null,
 
     /**
-     * Allow non-authenticated users to shorten link
+     * URL route for the shortened URL
+     * Example
+     *  'uri' => '/l', // https://yourdomain.com/l/exampleString
      */
-    'url-prefix' => '/l',
+    'uri' => '/l',
 
     /**
      * Where should the URL shortener route be?
      */
     'route' => [
         'prefix' => 'url-shortener',
+        'middleware' => [
+            // 'web',
+        ],
     ],
 
     /**
@@ -41,12 +46,12 @@ return [
     /**
      * Admin Template
      * example
-     * 'name' => 'layouts.app' for Default emailTraking use 'emailTrakingViews::layouts.app'
-     * 'section' => 'content' for Default emailTraking use 'content'
-     * 'styles_section' => 'styles' for Default emailTraking use 'styles'
+     * 'name' => 'layouts.app' for Default urlShortener use 'urlShortenerViews::layouts.app'
+     * 'section' => 'content' for Default urlShortener use 'content'
+     * 'styles_section' => 'styles' for Default urlShortener use 'styles'
      */
     'admin-template' => [
-        'name' => 'emailTrakingViews::layouts.app',
+        'name' => 'urlShortenerViews::layouts.app',
         'section' => 'content',
     ],
 
@@ -59,11 +64,6 @@ return [
      * Date Format
      */
     'date-format' => 'm/d/Y g:i a',
-
-    /**
-     * Allow non-authenticated users to shorten link
-     */
-    'allow-public' => true,
 
     /**
      * Maximum character length of shortened url slug

@@ -4,6 +4,7 @@ namespace Fasaya\UrlShortener\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Link extends Model
 {
@@ -24,7 +25,12 @@ class Link extends Model
         'deleter_ip'
     ];
 
-    public function linkClicks()
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(config('url-shortener.user-model'), 'created_by');
+    }
+
+    public function linkClicks(): HasMany
     {
         return $this->hasMany(LinkClick::class, 'short_link_id');
     }

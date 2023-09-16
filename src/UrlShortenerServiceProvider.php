@@ -32,12 +32,30 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
 
     protected function installRoutes(): self
     {
-        Route::get(config('url-shortener.url-prefix') . '/{slug}', [UrlShortenerController::class, 'index'])->name('url-shortener.index');
+        $config = $this->app['config']->get('url-shortener.route', []);
+        $config['namespace'] = 'fasaya\UrlShortener';
 
-        if (config('url-shortener.admin-route.enabled')) {
-            // Route::resource(config('url-shortener.admin-route.url-prefix'), AdminController::class);
-        }
+        Route::group($config, function () {
+            Route::get(config('url-shortener.uri', '/l') . '/{slug}', [UrlShortenerController::class, 'index'])->name('url-shortener.index');
+        });
+
+        // if (config('url-shortener.admin-route.enabled')) {
+        //     Route::resource(config('url-shortener.admin-route.uri'), AdminController::class);
+        // }
 
         return $this;
+    }
+
+    /**
+     * Publish the views
+     *
+     * @return void
+     */
+    protected function publishViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/views', 'urlShortenerViews');
+        $this->publishes([
+            __DIR__ . '/views' => base_path('resources/views/vendor/urlShortenerViews'),
+        ]);
     }
 }
