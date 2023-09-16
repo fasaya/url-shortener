@@ -6,13 +6,14 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Fasaya\UrlShortener\Model\Link;
 use Fasaya\UrlShortener\Model\LinkClick;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UrlShortener
 {
 
     private static $generate_tries_limit = 5; // how many times generating url before throwing an exception
 
-    public static function add(String $long_url, User $user = null): Link
+    public static function make(String $long_url): Link
     {
         self::validUrl($long_url);
 
@@ -26,7 +27,7 @@ class UrlShortener
         ]);
     }
 
-    public static function addCustom(String $long_url, String $customSlug): Link
+    public static function makeCustom(String $long_url, String $customSlug): Link
     {
         self::validUrl($long_url);
 
@@ -57,7 +58,7 @@ class UrlShortener
     public static function validUrl($url): bool
     {
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            throw new \Exception('Not a valid URL.');
+            throw new HttpException(400, 'Not a valid URL.');
         }
 
         return true;
@@ -72,13 +73,15 @@ class UrlShortener
 
             // check if tries limit is reached
             if (self::$generate_tries_limit <= 0) {
-                throw new \Exception('Tries limit reached.');
+                throw new HttpException(500, 'Tries limit reached.');
             }
 
             self::$generate_tries_limit--;
 
             return self::generateShortUrl($long_url);
         }
+
+        self::validUrl($short_url);
 
         return [
             'slug' => $slug,
@@ -91,8 +94,10 @@ class UrlShortener
         $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
 
         if (self::exists($short_url)) {
-            throw new \Exception('URL already exists.');
+            throw new HttpException(500, 'URL already exists.');
         }
+
+        self::validUrl($short_url);
 
         return $short_url;
     }
