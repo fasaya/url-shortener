@@ -15,7 +15,6 @@ class Link extends Model
         'slug',
         'short_url',
         'long_url',
-        'description',
         'clicks',
         'is_disabled',
         'expired_at',
@@ -25,9 +24,9 @@ class Link extends Model
         'deleter_ip'
     ];
 
-    public function urlClicks()
+    public function linkClicks()
     {
-        return $this->hasMany(LinkClick::class);
+        return $this->hasMany(LinkClick::class, 'short_link_id');
     }
 
     public static function boot()
