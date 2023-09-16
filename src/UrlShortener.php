@@ -7,7 +7,8 @@ use Fasaya\UrlShortener\Model\Link;
 
 class UrlShortener
 {
-    private $generate_tries_limit = 5; // how many times generating url before throwing an exception
+
+    private static $generate_tries_limit = 5; // how many times generating url before throwing an exception
 
     public static function add(String $long_url, User $user = null): Link
     {
@@ -19,14 +20,11 @@ class UrlShortener
             'slug' => $generate['slug'],
             'long_url' => $long_url,
             'short_url' => $generate['url'],
-            'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
-            'created_by' => $user ? $user->id : null,
-            'creator_ip' => request()->ip(),
+            'expired_at' => self::getExpireDate(),
         ]);
     }
 
-
-    public static function addCustom(String $long_url, String $customSlug, User $user = null): Link
+    public static function addCustom(String $long_url, String $customSlug): Link
     {
         self::validUrl($long_url);
 
@@ -36,9 +34,7 @@ class UrlShortener
             'slug' => $customSlug,
             'long_url' => $long_url,
             'short_url' => $short_url,
-            'expired_at' => config('url-shortener.expire-days') ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now()))) : null,
-            'created_by' => $user ? $user->id : null,
-            'creator_ip' => request()->ip(),
+            'expired_at' => self::getExpireDate(),
         ]);
     }
 
@@ -46,7 +42,10 @@ class UrlShortener
     {
         return Link::where('short_url', $short_url)
             ->where('is_disabled', 0)
-            ->where('expired_at', '>', now())
+            ->orWhere(function ($query) {
+                $query->where('expired_at', '>', now());
+                $query->whereNull('expired_at');
+            })
             ->exists();
     }
 
@@ -73,7 +72,7 @@ class UrlShortener
 
             self::$generate_tries_limit--;
 
-            return static::generateShortUrl($long_url);
+            return self::generateShortUrl($long_url);
         }
 
         return [
@@ -91,5 +90,12 @@ class UrlShortener
         }
 
         return $short_url;
+    }
+
+    private static function getExpireDate(): null | string
+    {
+        return config('url-shortener.expire-days')
+            ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now())))
+            : NULL;
     }
 }
