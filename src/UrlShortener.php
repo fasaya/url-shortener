@@ -3,7 +3,9 @@
 namespace Fasaya\UrlShortener;
 
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Fasaya\UrlShortener\Model\Link;
+use Fasaya\UrlShortener\Model\LinkClick;
 
 class UrlShortener
 {
@@ -40,11 +42,14 @@ class UrlShortener
 
     public static function exists($short_url): bool
     {
-        return Link::where('short_url', $short_url)
-            ->where('is_disabled', 0)
-            ->orWhere(function ($query) {
+        return Link::where('is_disabled', 0)
+            ->where(function ($query) use ($short_url) {
+                $query->where('short_url', $short_url);
+                $query->orWhere('slug', $short_url);
+            })
+            ->where(function ($query) {
                 $query->where('expired_at', '>', now());
-                $query->whereNull('expired_at');
+                $query->orWhereNull('expired_at');
             })
             ->exists();
     }
@@ -97,5 +102,31 @@ class UrlShortener
         return config('url-shortener.expire-days')
             ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now())))
             : NULL;
+    }
+
+    public static function redirect(Request $request, $short_url)
+    {
+        if (!self::exists($short_url)) {
+            return abort(404);
+        }
+
+        $link = Link::where('short_url', $short_url)->orWhere('slug', $short_url)->first();
+
+        // Record link click
+        $referer = $request->server('HTTP_REFERER');
+        $linkClick = LinkClick::create([
+            'short_link_id' => $link->id,
+            'ip' => $request->ip(),
+            'user_agent' => $request->server('HTTP_USER_AGENT'),
+            'referer' => $referer,
+            'referer_host' => parse_url($referer, PHP_URL_HOST),
+        ]);
+
+        // Increment click count
+        $link->clicks = intval($link->clicks) + 1;
+        $link->save();
+
+        // Redirect to full url
+        return redirect()->to($link->long_url, 301);
     }
 }
