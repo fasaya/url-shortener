@@ -43,6 +43,11 @@ class UrlShortener
 
     public static function exists($short_url): bool
     {
+        return self::getQuery($short_url)->exists();
+    }
+
+    public static function getQuery($short_url)
+    {
         return Link::where('is_disabled', 0)
             ->where(function ($query) use ($short_url) {
                 $query->where('short_url', $short_url);
@@ -51,8 +56,7 @@ class UrlShortener
             ->where(function ($query) {
                 $query->where('expired_at', '>', now());
                 $query->orWhereNull('expired_at');
-            })
-            ->exists();
+            });
     }
 
     public static function validUrl($url): bool
@@ -66,14 +70,14 @@ class UrlShortener
 
     public static function generateShortUrl($long_url): array
     {
-        $slug = Str::random(10);
+        $slug = Str::random(rand(config('url-shortener.min-length', 6), config('url-shortener.max-length', 10)));
         $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
 
         if (self::exists($short_url)) {
 
             // check if tries limit is reached
             if (self::$generate_tries_limit <= 0) {
-                throw new HttpException(500, 'Tries limit reached.');
+                throw new HttpException(409, 'Tries limit reached.');
             }
 
             self::$generate_tries_limit--;
@@ -91,10 +95,11 @@ class UrlShortener
 
     public static function generateCustomUrl($slug): string
     {
+        $slug = Str::slug($slug);
         $short_url = config('app.url') . config('url-shortener.url-prefix') . '/' . $slug;
 
         if (self::exists($short_url)) {
-            throw new HttpException(500, 'URL already exists.');
+            throw new HttpException(409, 'URL already exists.');
         }
 
         self::validUrl($short_url);
@@ -111,11 +116,13 @@ class UrlShortener
 
     public static function redirect(Request $request, $short_url)
     {
-        if (!self::exists($short_url)) {
+        $link = self::getQuery($short_url);
+
+        if (!$link->exists()) {
             return abort(404);
         }
 
-        $link = Link::where('short_url', $short_url)->orWhere('slug', $short_url)->first();
+        $link = $link->first();
 
         // Record link click
         $referer = $request->server('HTTP_REFERER');

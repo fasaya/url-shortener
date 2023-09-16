@@ -27,8 +27,8 @@ class LinkClick extends Model
             $model->created_at = date("Y-m-d H:i:s");
         });
 
-        self::updating(function ($model) {
-            $model->updated_at = date("Y-m-d H:i:s");
-        });
+        // self::updating(function ($model) {
+        //     $model->updated_at = date("Y-m-d H:i:s");
+        // });
     }
 }

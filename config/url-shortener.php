@@ -65,4 +65,14 @@ return [
      */
     'allow-public' => true,
 
+    /**
+     * Maximum character length of shortened url slug
+     */
+    'min-length' => 6,
+
+    /**
+     * Maximum character length of shortened url slug
+     */
+    'max-length' => 10,
+
 ];

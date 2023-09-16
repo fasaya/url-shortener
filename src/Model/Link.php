@@ -39,8 +39,8 @@ class Link extends Model
             $model->creator_ip = request()->ip();
         });
 
-        self::updating(function ($model) {
-            $model->updated_at = date("Y-m-d H:i:s");
-        });
+        // self::updating(function ($model) {
+        //     $model->updated_at = date("Y-m-d H:i:s");
+        // });
     }
 }
