@@ -2,8 +2,8 @@
 
 namespace Fasaya\UrlShortener;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UrlShortenerController extends Controller
 {

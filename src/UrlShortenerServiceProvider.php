@@ -2,6 +2,7 @@
 
 namespace Fasaya\UrlShortener;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -22,7 +23,8 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
             ->hasMigrations([
                 'create_link_table',
                 'create_link_click_table'
-            ]);
+            ])
+            ->hasViews();
     }
 
     public function packageBooted(): void
@@ -36,26 +38,25 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
         $config['namespace'] = 'fasaya\UrlShortener';
 
         Route::group($config, function () {
-            Route::get(config('url-shortener.uri', '/l') . '/{slug}', [UrlShortenerController::class, 'index'])->name('url-shortener.index');
+            Route::get('/{slug}', [UrlShortenerController::class, 'index'])->name('url-shortener.index');
         });
 
-        // if (config('url-shortener.admin-route.enabled')) {
-        //     Route::resource(config('url-shortener.admin-route.uri'), AdminController::class);
-        // }
+        // Install the Admin routes
+        $config_admin = $this->app['config']->get('url-shortener.admin-route', []);
+        $config_admin['namespace'] = 'fasaya\UrlShortener';
+
+        if (Arr::get($config_admin, 'enabled', true)) {
+            Route::group($config_admin, function () {
+                Route::get('/', [AdminController::class, 'index'])->name('index');
+                Route::post('/', [AdminController::class, 'store'])->name('store');
+                Route::get('/create', [AdminController::class, 'create'])->name('create');
+                Route::get('/{id}', [AdminController::class, 'show'])->name('show');
+                Route::put('/{id}', [AdminController::class, 'update'])->name('update');
+                Route::delete('/{id}', [AdminController::class, 'destroy'])->name('destroy');
+                Route::get('{id}/edit', [AdminController::class, 'edit'])->name('edit');
+            });
+        }
 
         return $this;
-    }
-
-    /**
-     * Publish the views
-     *
-     * @return void
-     */
-    protected function publishViews()
-    {
-        $this->loadViewsFrom(__DIR__ . '/views', 'urlShortenerViews');
-        $this->publishes([
-            __DIR__ . '/views' => base_path('resources/views/vendor/urlShortenerViews'),
-        ]);
     }
 }

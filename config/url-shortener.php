@@ -16,17 +16,22 @@ return [
     'expire-days' => null,
 
     /**
-     * URL route for the shortened URL
-     * Example
-     *  'uri' => '/l', // https://yourdomain.com/l/exampleString
+     * Maximum character length of shortened url slug
      */
-    'uri' => '/l',
+    'min-length' => 6,
 
     /**
-     * Where should the URL shortener route be?
+     * Maximum character length of shortened url slug
+     */
+    'max-length' => 10,
+
+    /**
+     * URL route for the shortened URL
+     * Example
+     *  'prefix' => '/l', // https://yourdomain.com/l/exampleString
      */
     'route' => [
-        'prefix' => 'url-shortener',
+        'prefix' => '/l',
         'middleware' => [
             // 'web',
         ],
@@ -37,6 +42,7 @@ return [
      */
     'admin-route' => [
         'enabled' => true, // Should the admin routes be enabled?
+        'as' => 'url-shortener-manager.',
         'prefix' => 'url-shortener-manager',
         'middleware' => [
             'web',
@@ -46,13 +52,16 @@ return [
     /**
      * Admin Template
      * example
-     * 'name' => 'layouts.app' for Default urlShortener use 'urlShortenerViews::layouts.app'
+     * 'name' => 'layouts.app' for Default urlShortener use 'url-shortener::layouts.app'
      * 'section' => 'content' for Default urlShortener use 'content'
-     * 'styles_section' => 'styles' for Default urlShortener use 'styles'
+     * 'styles_section' => 'page_style' for Default urlShortener use 'page_style'
+     * 'script_section' => 'page_script' for Default urlShortener use 'page_script'
      */
     'admin-template' => [
-        'name' => 'urlShortenerViews::layouts.app',
+        'name' => 'url-shortener::layouts.app',
         'section' => 'content',
+        'styles_section' => 'page_style',
+        'script_section' => 'page_script',
     ],
 
     /**
@@ -64,15 +73,5 @@ return [
      * Date Format
      */
     'date-format' => 'm/d/Y g:i a',
-
-    /**
-     * Maximum character length of shortened url slug
-     */
-    'min-length' => 6,
-
-    /**
-     * Maximum character length of shortened url slug
-     */
-    'max-length' => 10,
 
 ];

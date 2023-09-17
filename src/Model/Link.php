@@ -5,10 +5,11 @@ namespace Fasaya\UrlShortener\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Link extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'short_links';
 
@@ -23,6 +24,10 @@ class Link extends Model
         'creator_ip',
         'deleted_by',
         'deleter_ip'
+    ];
+
+    protected $casts = [
+        'expired_at' => 'datetime',
     ];
 
     public function creator(): BelongsTo
@@ -45,8 +50,8 @@ class Link extends Model
             $model->creator_ip = request()->ip();
         });
 
-        // self::updating(function ($model) {
-        //     $model->updated_at = date("Y-m-d H:i:s");
-        // });
+        self::updating(function ($model) {
+            $model->updated_at = date("Y-m-d H:i:s");
+        });
     }
 }
