@@ -47,7 +47,7 @@ class Link extends Model
 
         self::creating(function ($model) {
             $model->created_at = date("Y-m-d H:i:s");
-            $model->created_by = auth()->check() ? auth()->user()->id() : NULL;
+            $model->created_by = auth()->check() ? auth()->id() : NULL;
             $model->creator_ip = request()->ip();
         });
 

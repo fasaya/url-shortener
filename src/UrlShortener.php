@@ -13,7 +13,7 @@ class UrlShortener
 
     private static $generate_tries_limit = 5; // how many times generating url before throwing an exception
 
-    public static function make(String $long_url): Link
+    public static function make(String $long_url, $expireDate = NULL): Link
     {
         self::validUrl($long_url);
 
@@ -23,11 +23,11 @@ class UrlShortener
             'slug' => $generate['slug'],
             'long_url' => $long_url,
             'short_url' => $generate['url'],
-            'expired_at' => self::getExpireDate(),
+            'expired_at' => $expireDate,
         ]);
     }
 
-    public static function makeCustom(String $long_url, String $customSlug): Link
+    public static function makeCustom(String $long_url, String $customSlug, $expireDate = NULL): Link
     {
         self::validUrl($long_url);
 
@@ -37,7 +37,7 @@ class UrlShortener
             'slug' => $customSlug,
             'long_url' => $long_url,
             'short_url' => $short_url,
-            'expired_at' => self::getExpireDate(),
+            'expired_at' => $expireDate,
         ]);
     }
 
@@ -105,13 +105,6 @@ class UrlShortener
         self::validUrl($short_url);
 
         return $short_url;
-    }
-
-    private static function getExpireDate(): null | string
-    {
-        return !is_null(config('url-shortener.expire-days'))
-            ? date('Y-m-d H:i:s', strtotime('+' . config('url-shortener.expire-days') . ' days', strtotime(now())))
-            : NULL;
     }
 
     public static function redirect(Request $request, $short_url)

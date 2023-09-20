@@ -1,8 +1,6 @@
-`@extends(config('url-shortener.admin-template.name'))
+@extends(config('url-shortener.admin-template.name'))
 
 @push(config('url-shortener.admin-template.styles_section'))
-<meta name="title" content="Link Shortener">
-<meta name="description" content="Link Shortener">
 <style>
     .copy-btn:hover {
         cursor: pointer;
@@ -109,12 +107,15 @@
 @push(config('url-shortener.admin-template.script_section'))
 <script>
     function copyUrl(id) {
-        // get value by id
         var value = document.getElementById("link_" + id).innerHTML;
-        // copy to clipboard
-        navigator.clipboard.writeText(value);
 
-        alert(`Link copied to clipboard`);
+        // Request user gesture for clipboard access
+        navigator.clipboard.writeText(value).then(() => {
+            alert(`Link copied to clipboard`);
+            console.log(value);
+        }).catch(err => {
+            console.error('Failed to copy to clipboard: ', err);
+        });
     }
 </script>
 @endpush

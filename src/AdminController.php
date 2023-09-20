@@ -2,9 +2,10 @@
 
 namespace Fasaya\UrlShortener;
 
-use Fasaya\UrlShortener\Model\Link;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Fasaya\UrlShortener\Model\Link;
+use Fasaya\UrlShortener\Requests\LinkStoreRequest;
 
 class AdminController extends Controller
 {
@@ -23,7 +24,9 @@ class AdminController extends Controller
             });
         }
 
-        $links = $links->paginate(config('url-shortener.links-per-page'));
+        $links = $links
+            ->orderBy('id', 'DESC')
+            ->paginate(config('url-shortener.links-per-page'));
 
         return view('url-shortener::index', compact('links'));
     }
@@ -33,7 +36,11 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return view('links.create');
+        $date = new \DateTime();
+        $currentDate = $date->format('Y-m-d\TH:i');
+        $nextWeekDate = $date->add(new \DateInterval('P7D'))->format('Y-m-d\TH:i');
+
+        return view('url-shortener::create', compact('currentDate', 'nextWeekDate'));
     }
 
     /**
@@ -41,9 +48,15 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        $link = Link::create($validatedData);
+        $input = $request->all();
+        // dd($input);
+        $expiration_date =  $request->expiration_date ? date('Y-m-d H:i:s', strtotime($input['expiration_date'])) : NULL;
 
-        return redirect()->route('links.index');
+        $link = $request->is_custom_checkbox == 'on'
+            ? UrlShortener::makeCustom($input['redirect_to'], $input['custom'], $expiration_date)
+            : UrlShortener::make($input['redirect_to'], $expiration_date);
+
+        return redirect()->route('url-shortener-manager.index');
     }
 
     /**
