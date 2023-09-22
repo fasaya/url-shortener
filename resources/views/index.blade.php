@@ -62,7 +62,7 @@
                     <td>
                         <a href="{{ route('url-shortener-manager.edit', $link->id) }}" id="link_{{ $link->id }}" class="link">{{ $link->short_url }}</a>
                         &nbsp;
-                        <span onclick="copyUrl({{ $link->id }})" class="copy-btn">
+                        <span onclick="copyText('{{ $link->short_url }}')" class="copy-btn">
                             <svg width='20' height='20' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='20' height='20' stroke='none' fill='#000000' opacity='0' />
                                 <g transform="matrix(1 0 0 1 12 12)">
@@ -106,15 +106,13 @@
 
 @push(config('url-shortener.admin-template.script_section'))
 <script>
-    function copyUrl(id) {
-        var value = document.getElementById("link_" + id).innerHTML;
-
-        // Request user gesture for clipboard access
+    function copyText(value) {
         navigator.clipboard.writeText(value).then(() => {
             alert(`Link copied to clipboard`);
-            console.log(value);
+            // console.log(value);
         }).catch(err => {
-            console.error('Failed to copy to clipboard: ', err);
+            alert(`Failed to copy link to clipboard`);
+            // console.error('Failed to copy to clipboard: ', err);
         });
     }
 </script>
