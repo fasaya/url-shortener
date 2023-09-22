@@ -2,11 +2,11 @@
 
 namespace Fasaya\UrlShortener;
 
+use Fasaya\UrlShortener\Exceptions\ValidationException;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Fasaya\UrlShortener\Model\Link;
 use Fasaya\UrlShortener\Model\LinkClick;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UrlShortener
 {
@@ -62,7 +62,7 @@ class UrlShortener
     public static function validUrl($url): bool
     {
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            throw new HttpException(400, 'Not a valid URL.');
+            throw new ValidationException(400, 'Not a valid URL.');
         }
 
         return true;
@@ -77,7 +77,7 @@ class UrlShortener
 
             // check if tries limit is reached
             if (self::$generate_tries_limit <= 0) {
-                throw new HttpException(409, 'Tries limit reached.');
+                throw new ValidationException(409, 'Tries limit reached.');
             }
 
             self::$generate_tries_limit--;
@@ -99,7 +99,7 @@ class UrlShortener
         $short_url = config('app.url') . config('url-shortener.uri', '/l') . '/' . $slug;
 
         if (self::exists($short_url)) {
-            throw new HttpException(409, 'URL already exists.');
+            throw new ValidationException('URL already exists.', 409);
         }
 
         self::validUrl($short_url);

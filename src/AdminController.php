@@ -46,10 +46,10 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LinkStoreRequest $request)
     {
         $input = $request->all();
-        // dd($input);
+
         $expiration_date =  $request->expiration_date ? date('Y-m-d H:i:s', strtotime($input['expiration_date'])) : NULL;
 
         $link = $request->is_custom_checkbox == 'on'
