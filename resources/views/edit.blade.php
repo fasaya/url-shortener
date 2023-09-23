@@ -12,14 +12,14 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-sm-12">
-            <a href="{{ route('url-shortener-manager.index') }}">&#60; Back</a>
+            <a href="{{ route(config('url-shortener.admin-route.as') . 'index') }}">&#60; Back</a>
             <h1>Update Link</h1>
         </div>
     </div>
     <hr>
     <div class="row">
         <div class="col-sm-12">
-            <form method="POST" action="{{ route('url-shortener-manager.update', $link->id) }}">
+            <form method="POST" action="{{ route(config('url-shortener.admin-route.as') . 'update', $link->id) }}">
                 @csrf
                 @method('PUT')
                 <div class="form-group">

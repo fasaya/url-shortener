@@ -28,7 +28,7 @@
     </div>
     <div class="row mt-3 mb-0">
         <div class="col-sm-6">
-            <form action="{{ route('url-shortener-manager.index') }}">
+            <form action="{{ route(config('url-shortener.admin-route.as') . 'index') }}">
                 <div class="input-group">
                     <input type="text" name="search" value="{{ request()->search ?? '' }}" class="form-control" placeholder="Search...">
                     <div class="input-group-append">
@@ -38,7 +38,7 @@
             </form>
         </div>
         <div class="col-sm-6 text-right">
-            <a href="{{ route('url-shortener-manager.create') }}" class="btn btn-primary">
+            <a href="{{ route(config('url-shortener.admin-route.as') . 'create') }}" class="btn btn-primary">
                 + New Link
             </a>
         </div>
@@ -69,8 +69,8 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>
-                        <a href="{{ route('url-shortener-manager.edit', $link->id) }}" id="link_{{ $link->id }}" class="link">{{ $link->short_url }}</a>
-                        &nbsp;
+                        <a href="{{ route(config('url-shortener.admin-route.as') . 'edit', $link->id) }}" id="link_{{ $link->id }}" class="link">{{ $link->short_url }}</a>
+                        {{-- &nbsp; --}}
                         <span onclick="copyText('{{ $link->short_url }}')" class="copy-btn">
                             <svg width='20' height='20' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='20' height='20' stroke='none' fill='#000000' opacity='0' />
@@ -82,7 +82,7 @@
                     </td>
                     <td>{{ $link->long_url }}</td>
                     <td>
-                        <a href="{{ route('url-shortener-manager.edit', $link->id) }}">
+                        <a href="{{ route(config('url-shortener.admin-route.as') . 'edit', $link->id) }}">
                             @if ($link->is_disabled == 1)
                             <span class="badge badge-secondary">Disabled</span>
                             @else
@@ -94,7 +94,7 @@
                     <td>{{ $link->created_at->format(config('url-shortener.date-format')) }}</td>
                     <td>
                         @if($link->clicks > 0)
-                        <a href="{{ route('url-shortener-manager.show', $link->id) }}">Link Report</a>
+                        <a href="{{ route(config('url-shortener.admin-route.as') . 'show', $link->id) }}">Link Report</a>
                         @else
                         No Clicks
                         @endif

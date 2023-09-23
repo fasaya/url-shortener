@@ -5,6 +5,7 @@ namespace Fasaya\UrlShortener;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Fasaya\UrlShortener\Model\Link;
+use Fasaya\UrlShortener\Model\LinkClick;
 use Fasaya\UrlShortener\Requests\LinkStoreRequest;
 use Fasaya\UrlShortener\Requests\LinkUpdateRequest;
 
@@ -73,7 +74,8 @@ class AdminController extends Controller
      */
     public function show(Link $link)
     {
-        return view('url-shortener::show', compact('link'));
+        $clicks = LinkClick::where('short_link_id', $link->id)->orderBy('id', 'DESC')->paginate(config('url-shortener.links-per-page'));
+        return view('url-shortener::link_clicks', compact('link', 'clicks'));
     }
 
     /**
