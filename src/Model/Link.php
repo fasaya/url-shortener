@@ -23,6 +23,7 @@ class Link extends Model
         'expired_at',
         'created_by',
         'creator_ip',
+        'deleted_at',
         'deleted_by',
         'deleter_ip'
     ];
@@ -53,6 +54,12 @@ class Link extends Model
 
         self::updating(function ($model) {
             $model->updated_at = date("Y-m-d H:i:s");
+        });
+
+        self::deleting(function ($model) {
+            $model->deleted_at = date("Y-m-d H:i:s");
+            $model->deleted_by = auth()->check() ? auth()->id() : NULL;
+            $model->deleter_ip = request()->ip();
         });
     }
 }

@@ -15,6 +15,15 @@
   @yield('content')
 
   @stack('page_script')
+  <script>
+    function copyText(value) {
+        navigator.clipboard.writeText(value).then(() => {
+            alert(`Link copied to clipboard`);
+        }).catch(err => {
+            alert(`Failed to copy link to clipboard`);
+        });
+    }
+  </script>
 </body>
 
 </html>

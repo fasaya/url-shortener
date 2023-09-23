@@ -50,10 +50,10 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
                 Route::get('/', [AdminController::class, 'index'])->name('index');
                 Route::post('/', [AdminController::class, 'store'])->name('store');
                 Route::get('/create', [AdminController::class, 'create'])->name('create');
-                Route::get('/{id}', [AdminController::class, 'show'])->name('show');
-                Route::put('/{id}', [AdminController::class, 'update'])->name('update');
-                Route::delete('/{id}', [AdminController::class, 'destroy'])->name('destroy');
-                Route::get('{id}/edit', [AdminController::class, 'edit'])->name('edit');
+                Route::get('/{link}', [AdminController::class, 'show'])->name('show');
+                Route::put('/{link}', [AdminController::class, 'update'])->name('update');
+                Route::delete('/{link}', [AdminController::class, 'destroy'])->name('destroy');
+                Route::get('{link}/edit', [AdminController::class, 'edit'])->name('edit');
             });
         }
 

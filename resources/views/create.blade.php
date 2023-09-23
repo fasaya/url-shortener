@@ -47,14 +47,14 @@
                 <div class="form-group">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" name="have_expiration_date_checkbox" id="have_expiration_date_checkbox" onclick="displayInput(this, 'expiration_date')" />
-                        <label class="form-check-label" for="have_expiration_date_checkbox">Have exparation date</label>
+                        <label class="form-check-label" for="have_expiration_date_checkbox">Have expiration date</label>
                     </div>
-                    <small class="form-text text-muted">If left unchecked, the shortened url will not have exparation date. You can also edit/disable it later.</small>
+                    <small class="form-text text-muted">If left unchecked, the shortened url will not have expiration date. You can also edit/disable it later.</small>
                 </div>
                 <div class="form-group" style="display: none;" id="expiration_date">
                     <label>Expired At</label>
+                    <input type="datetime-local" class="form-control" min="{{ $currentDate }}" value="{{ old('expiration_date') ?? $nextWeekDate }}" name="expiration_date" placeholder="Enter expiration date" />
                     @error('expiration_date')<small class="form-text text-danger">{{ $message }}</small>@enderror
-                    <input type="datetime-local" class="form-control" min="{{ $currentDate }}" value="{{ old('expiration_date') ?? $nextWeekDate }}" name="expiration_date" placeholder="Enter exparation date" />
                 </div>
                 <button type="submit" class="btn btn-primary mt-2">Submit</button>
             </form>

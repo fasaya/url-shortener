@@ -21,7 +21,7 @@
 
 @section(config('url-shortener.admin-template.section'))
 <div class="container">
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-sm-12">
             <h1>Links</h1>
         </div>
@@ -46,6 +46,15 @@
     <hr>
     <div class="row">
         <div class="col-sm-12">
+
+            @if(session()->has('alert-success'))
+            <div class="alert alert-success" role="alert">{{ session('alert-success') }}</div>
+            @endif
+
+            @if(session()->has('alert-error'))
+            <div class="alert alert-danger" role="alert">{{ session('alert-danger') }}</div>
+            @endif
+
             <table class="table table-striped">
                 <tr>
                     <th>#</th>
@@ -102,18 +111,3 @@
     </div>
 </div>
 @endsection
-
-
-@push(config('url-shortener.admin-template.script_section'))
-<script>
-    function copyText(value) {
-        navigator.clipboard.writeText(value).then(() => {
-            alert(`Link copied to clipboard`);
-            // console.log(value);
-        }).catch(err => {
-            alert(`Failed to copy link to clipboard`);
-            // console.error('Failed to copy to clipboard: ', err);
-        });
-    }
-</script>
-@endpush

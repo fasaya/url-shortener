@@ -6,9 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Fasaya\UrlShortener\Model\Link;
 use Fasaya\UrlShortener\Requests\LinkStoreRequest;
+use Fasaya\UrlShortener\Requests\LinkUpdateRequest;
 
 class AdminController extends Controller
 {
+    public $route;
+
+    public function __construct()
+    {
+        $this->route = config('url-shortener.admin-route.as');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -56,51 +64,51 @@ class AdminController extends Controller
             ? UrlShortener::makeCustom($input['redirect_to'], $input['custom'], $expiration_date)
             : UrlShortener::make($input['redirect_to'], $expiration_date);
 
-        return redirect()->route('url-shortener-manager.index');
+        session()->flash('alert-success', 'Data created successfully');
+        return redirect()->route($this->route . 'index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Link $link)
     {
-        $link = Link::findOrFail($id); // Find the Link by ID using Eloquent
-        return view('links.show', compact('link'));
+        return view('url-shortener::show', compact('link'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Link $link)
     {
-        $link = Link::findOrFail($id); // Find the Link by ID using Eloquent
-        return view('links.edit', compact('link'));
+        $date = new \DateTime($link->created_at);
+        $created_at = $date->format('Y-m-d\TH:i');
+
+        return view('url-shortener::edit', compact('link', 'created_at'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(LinkUpdateRequest $request, Link $link)
     {
-        // Validate and update the Link resource using Eloquent
-        $validatedData = $request->validate([
-            'url' => 'required|url|unique:links,url,' . $id,
+        $link->update([
+            'expired_at' => $request->have_expiration_date_checkbox === 'on' ? $request->expiration_date : null,
+            'is_disabled' => $request->is_disabled
         ]);
 
-        $link = Link::findOrFail($id);
-        $link->update($validatedData);
-
-        return redirect()->route('links.index');
+        session()->flash('alert-success', 'Data updated successfully');
+        return redirect()->route($this->route . 'index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Link $link)
     {
-        $link = Link::findOrFail($id); // Find the Link by ID using Eloquent
-        $link->delete(); // Delete the Link using Eloquent
+        $link->delete();
 
-        return redirect()->route('links.index');
+        session()->flash('alert-success', 'Data updated successfully');
+        return redirect()->route($this->route . 'index');
     }
 }
