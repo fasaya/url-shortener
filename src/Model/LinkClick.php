@@ -19,6 +19,11 @@ class LinkClick extends Model
         'referer_host'
     ];
 
+    public function link(): BelongsTo
+    {
+        return $this->belongsTo(Link::class, 'short_link_id');
+    }
+
     public static function boot()
     {
         parent::boot();
