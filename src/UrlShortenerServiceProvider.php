@@ -21,8 +21,8 @@ class UrlShortenerServiceProvider extends PackageServiceProvider
             ->name('url-shortener')
             ->hasConfigFile('url-shortener')
             ->hasMigrations([
-                'create_link_table',
-                'create_link_click_table'
+                '0_create_short_link_table',
+                '1_create_short_link_click_table'
             ])
             ->hasViews();
     }
