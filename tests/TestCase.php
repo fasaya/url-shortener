@@ -14,7 +14,7 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
-        \DB::connection('mysql')->enableQueryLog();
+        // $this->withFactories(__DIR__ . '/factories');
     }
 
     /**
@@ -45,6 +45,8 @@ class TestCase extends Orchestra
             ]) : [],
         ]);
         $app['config']->set('app.debug', true);
+
+        $app['router']->getRoutes()->refreshNameLookups();
     }
 
     protected function getPackageProviders($app)

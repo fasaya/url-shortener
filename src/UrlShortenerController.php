@@ -3,7 +3,7 @@
 namespace Fasaya\UrlShortener;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 
 class UrlShortenerController extends Controller
 {

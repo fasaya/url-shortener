@@ -14,10 +14,18 @@
     beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <!-- <testsuites>
         <testsuite name="Fasaya Test Suite">
             <directory>tests</directory>
         </testsuite>
-    </testsuites>
+    </testsuites> -->
     <coverage>
         <report>
             <html outputDirectory="build/coverage"/>

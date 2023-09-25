@@ -1,25 +1,19 @@
 <?php
 
-namespace Fasaya\UrlShortener\Tests;
+namespace Fasaya\UrlShortener\Tests\Unit;
 
 use Fasaya\UrlShortener\Tests\TestCase;
 use Fasaya\UrlShortener\UrlShortener;
 use Fasaya\UrlShortener\Model\Link;
 use Fasaya\UrlShortener\Exceptions\ValidationException;
 use Illuminate\Support\Str;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UrlShortenerTest extends TestCase
 {
 
-    // use RefreshDatabase;
-
-    // This method is called before each test method
     protected function setUp(): void
     {
         parent::setUp();
-        // dd(config('database'));
-        // Additional setup specific to your package, if needed
     }
 
     public function testMakeMethodCreatesLink()
@@ -120,12 +114,10 @@ class UrlShortenerTest extends TestCase
         $link->delete();
     }
 
-    // Add more test methods for other functions as needed
-
     // Clean up (optional)
-    // protected function tearDown(): void
-    // {
-    //     // Additional cleanup specific to your package, if needed
-    //     parent::tearDown();
-    // }
+    protected function tearDown(): void
+    {
+        // Additional cleanup specific to your package, if needed
+        parent::tearDown();
+    }
 }

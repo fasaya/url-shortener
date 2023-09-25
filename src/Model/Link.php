@@ -42,6 +42,11 @@ class Link extends Model
         return $this->hasMany(LinkClick::class, 'short_link_id');
     }
 
+    protected static function newFactory()
+    {
+        return \Fasaya\UrlShortener\Factories\LinkFactory::new();
+    }
+
     public static function boot()
     {
         parent::boot();
