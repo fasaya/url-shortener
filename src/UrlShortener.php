@@ -132,6 +132,6 @@ class UrlShortener
         $link->save();
 
         // Redirect to full url
-        return redirect()->to($link->long_url, 301);
+        return redirect()->away($link->long_url, 301);
     }
 }
