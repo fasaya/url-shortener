@@ -14,7 +14,6 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
-        // $this->withFactories(__DIR__ . '/factories');
     }
 
     /**
@@ -63,72 +62,23 @@ class TestCase extends Orchestra
      */
     protected function defineDatabaseMigrations()
     {
-        // bug: not migrated by order
-        // if add number (sort) on the front of the migration name it will work, but have to change it on service provider too
-        $this->turnStubsToMigrations();
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
+        // RefreshDatabase trait isn't working so had to do it manually
+        $this->loadLaravelMigrations(['--database' => 'testbench']);
+        // $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
+
+        $migrationStubsInOrder = [
+            'create_short_link_table',
+            'create_short_link_click_table',
+        ];
+
+        foreach ($migrationStubsInOrder as $migration) {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/' . $migration . '.php');
+        }
+
         // $this->artisan('migrate', ['--database' => 'testbench'])->run();
-        $this->beforeApplicationDestroyed(function () {
-            $this->turnMigrationsToStubs();
-            artisan($this, 'migrate:rollback', ['--database' => 'testbench']);
-        });
 
-
-        // $this->turnStubsToMigrations();
-        // // Define the order in which migration stubs should be executed
-        // $migrationStubsInOrder = [
-        //     'create_short_link_table',
-        //     'create_short_link_click_table',
-        // ];
-
-        // // Generate and execute migrations from stubs in the specified order
-        // foreach ($migrationStubsInOrder as $stub) {
-        //     // Generate migration file from stub
-        //     try {
-        //         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/' . $stub . '.php');
-        //     } catch (\Throwable $th) {
-        //         //throw $th;
-        //     }
-        //     // $this->artisan('migrate', [
-        //     //     '--database' => 'testbench',
-        //     //     '--path' => __DIR__ . '/../database/migrations/' . $stub . '.php',
-        //     //     // '--path' => database_path('migrations/' . $stub . '.php'),
-        //     // ])->run();
-        // }
-        // // $this->artisan('migrate', ['--database' => 'testbench'])->run();
-        // // $this->loadMigrationsFrom(__DIR__ . '/migrations/');
-        // // $this->artisan('migrate', ['--path' => 'tests/migrations', '--database' => 'testbench']);
-
-        // // Rollback migrations in reverse order when the application is destroyed
-        // $this->beforeApplicationDestroyed(function () use ($migrationStubsInOrder) {
-        //     $this->artisan('migrate:rollback', ['--database' => 'testbench']);
-        //     $this->turnMigrationsToStubs();
+        // $this->beforeApplicationDestroyed(function () {
+        //     artisan($this, 'migrate:rollback', ['--database' => 'testbench']);
         // });
-    }
-
-    protected function turnStubsToMigrations(): void
-    {
-        $migrationsFolder = __DIR__ . '/../database/migrations/';
-        $migrations = scandir($migrationsFolder);
-        foreach ($migrations as $migration) {
-            if ($migration === '.' || $migration === '..') continue;
-
-            $newName = str_replace('.php.stub', '.php', $migration);
-
-            rename($migrationsFolder . $migration, $migrationsFolder . $newName);
-        }
-    }
-
-    protected function turnMigrationsToStubs(): void
-    {
-        $migrationsFolder = __DIR__ . '/../database/migrations/';
-        $migrations = scandir($migrationsFolder);
-        foreach ($migrations as $migration) {
-            if ($migration === '.' || $migration === '..') continue;
-
-            $newName = str_replace('.php', '.php.stub', $migration);
-
-            rename($migrationsFolder . $migration, $migrationsFolder . $newName);
-        }
     }
 }

@@ -103,15 +103,16 @@ class UrlShortenerTest extends TestCase
         // Arrange
         $longUrl = 'https://example.com';
         $link = UrlShortener::make($longUrl);
-        $request = $this->app['request']->create('/redirect', 'GET', ['short_url' => $link->short_url]);
+        $request = $this->app['request']->create(config('url-shortener.uri', '/l'), 'GET', ['slug' => $link->slug]);
 
         // Act
         $response = UrlShortener::redirect($request, $link->short_url);
 
         // Assert
         $this->assertInstanceOf(\Illuminate\Http\RedirectResponse::class, $response);
+        $this->assertEquals($longUrl, $response->getTargetUrl());
         $this->assertEquals(301, $response->status());
-        $link->delete();
+        // $link->delete();
     }
 
     // Clean up (optional)
