@@ -94,6 +94,11 @@ class AdminController extends Controller
      */
     public function update(LinkUpdateRequest $request, Link $link)
     {
+        if (UrlShortener::getQuery($link->slug)->where('id', '!=', $link->id)->exists() && $request->is_disabled == 0) {
+            session()->flash('alert-error', 'Failed to update. Other identical URL is currently active, disable other to activate.');
+            return redirect()->route($this->route . 'index');
+        }
+
         $link->update([
             'expired_at' => $request->have_expiration_date_checkbox === 'on' ? $request->expiration_date : null,
             'is_disabled' => $request->is_disabled

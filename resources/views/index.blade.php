@@ -52,7 +52,7 @@
             @endif
 
             @if(session()->has('alert-error'))
-            <div class="alert alert-danger" role="alert">{{ session('alert-danger') }}</div>
+            <div class="alert alert-danger" role="alert">{{ session('alert-error') }}</div>
             @endif
 
             <table class="table table-striped">
