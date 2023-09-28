@@ -39,6 +39,7 @@ return [
         'prefix' => 'url-shortener-manager',
         'middleware' => [
             'web',
+            // 'auth',
         ],
     ],
 
