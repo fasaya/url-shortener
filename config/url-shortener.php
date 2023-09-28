@@ -9,13 +9,6 @@ return [
     'user-model' => App\Models\User::class,
 
     /**
-     * Optionally set url access duration (days), set to null to keep forever.
-     * Example
-     * 'expire-days' => 30
-     */
-    'expire-days' => null,
-
-    /**
      * Maximum character length of shortened url slug
      */
     'min-length' => 6,

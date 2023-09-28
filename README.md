@@ -5,15 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/fasaya/url-shortener/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/fasaya/url-shortener/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/fasaya/url-shortener.svg?style=flat-square)](https://packagist.org/packages/fasaya/url-shortener)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/url-shortener.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/url-shortener)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This is a package to shorten your url also track link clicks
 
 ## Installation
 
@@ -40,10 +32,75 @@ This is the contents of the published config file:
 
 ```php
 return [
+
+    /**
+     * Here you may specify the fully qualified class name of the user model class.
+     */
+    'user-model' => App\Models\User::class,
+
+    /**
+     * Maximum character length of shortened url slug
+     */
+    'min-length' => 6,
+
+    /**
+     * Maximum character length of shortened url slug
+     */
+    'max-length' => 10,
+
+    /**
+     * URL route for the shortened URL
+     * Example
+     *  'prefix' => '/l', // https://yourdomain.com/l/exampleString
+     */
+    'route' => [
+        'prefix' => '/l',
+        'middleware' => [
+            // 'web',
+        ],
+    ],
+
+    /**
+     * Where should the admin route be?
+     */
+    'admin-route' => [
+        'enabled' => true, // Should the admin routes be enabled?
+        'as' => 'url-shortener-manager.',
+        'prefix' => 'url-shortener-manager',
+        'middleware' => [
+            'web',
+        ],
+    ],
+
+    /**
+     * Admin Template
+     * example
+     * 'name' => 'layouts.app' for Default urlShortener use 'url-shortener::layouts.app'
+     * 'section' => 'content' for Default urlShortener use 'content'
+     * 'styles_section' => 'page_style' for Default urlShortener use 'page_style'
+     * 'script_section' => 'page_script' for Default urlShortener use 'page_script'
+     */
+    'admin-template' => [
+        'name' => 'url-shortener::layouts.app',
+        'section' => 'content',
+        'styles_section' => 'page_style',
+        'script_section' => 'page_script',
+    ],
+
+    /**
+     * Number of emails per page in the admin view
+     */
+    'links-per-page' => 30,
+
+    /**
+     * Date Format
+     */
+    'date-format' => 'm/d/Y g:i a',
+
 ];
 ```
 
-Optionally, you can publish the views using
+Optionally, you can publish the url shortener manager dashboard views using
 
 ```bash
 php artisan vendor:publish --tag="url-shortener-views"
@@ -52,9 +109,25 @@ php artisan vendor:publish --tag="url-shortener-views"
 ## Usage
 
 ```php
-$urlShortener = new Fasaya\UrlShortener();
-echo $urlShortener->echoPhrase('Hello, Fasaya!');
+use Fasaya\UrlShortener\UrlShortener;
+
+// Add an expiration date (optional)
+$expire_at = '2025-12-12 00:00:00'; // NULL for no expiration date
+
+// Generate a random short URL
+$link = UrlShortener::make('http://example.com', $expire_at)->short_url;
+
+// Generate a custom short URL
+$link = UrlShortener::make('http://example.com', 'custom-short-slug', $expire_at)->short_url; 
 ```
+
+## Exceptions
+
+The following exceptions may be thrown. You may add them to your ignore list in your exception handler, or handle them as you wish.
+
+-   Fasaya\UrlShortener\Exceptions\UrlNotValidException - Not a valid URL.
+-   Fasaya\UrlShortener\Exceptions\UrlExistsException - URL already exists (or active).
+-   Fasaya\UrlShortener\Exceptions\TriesLimitReachedException - Generating reached tries limit.
 
 ## Testing
 
