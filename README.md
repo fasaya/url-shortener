@@ -126,7 +126,7 @@ $link = UrlShortener::make('http://example.com', 'custom-short-slug', $expire_at
 The following exceptions may be thrown. You may add them to your ignore list in your exception handler, or handle them as you wish.
 
 -   Fasaya\UrlShortener\Exceptions\UrlNotValidException - Not a valid URL.
--   Fasaya\UrlShortener\Exceptions\UrlExistsException - URL already exists (or active).
+-   Fasaya\UrlShortener\Exceptions\UrlExistsException - URL already exists and active.
 -   Fasaya\UrlShortener\Exceptions\TriesLimitReachedException - Generating reached tries limit.
 
 ## Testing
