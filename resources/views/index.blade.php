@@ -106,7 +106,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12 text-center">
-            {!! $links->render() !!}
+            {!! $links->links('url-shortener::layouts.pagination.bootstrap-4') !!}
         </div>
     </div>
 </div>

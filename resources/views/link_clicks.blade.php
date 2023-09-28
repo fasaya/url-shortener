@@ -61,7 +61,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12 text-center">
-            {!! $clicks->render() !!}
+            {!! $clicks->links('url-shortener::layouts.pagination.bootstrap-4') !!}
         </div>
     </div>
 </div>
